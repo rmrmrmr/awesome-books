@@ -1,0 +1,8 @@
+#inputForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.formInput {
+  width: 30%;
+}
