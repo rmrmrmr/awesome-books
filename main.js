@@ -10,11 +10,8 @@ const createBook = (ev) => {
     author: document.querySelector('#authorInput').value,
   }
   bookList.push(book);
-
-  postedBooks.remove(); 
-
-  for(let i = 0; i < bookList.length; i += 1) {
-    book.id = i;
+  console.log(bookList);
+  /* for(let i = 0; i < bookList.length; i += 1) {
     const bookCont = document.createElement('div');
     bookCont.classList.add('bookCont');
     
@@ -29,11 +26,10 @@ const createBook = (ev) => {
     dispAuthor.innerHTML = `by ${book.author}`;
     bookCont.appendChild(dispAuthor);
     console.log(dispAuthor);
-  }
-
-  postedBooks.appendChild(bookCont);
-  
-  document.form[0].reset();
+    
+    postedBooks.appendChild(bookCont);
+  } */
+  document.forms[0].reset();
 }
 
 
