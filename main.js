@@ -1,22 +1,31 @@
-let bookList =[]
+let bookList = [];
 
 const addForm = document.querySelector('#inputForm');
 const postedBooks = document.querySelector('#postedBooks');
 
+function removeFunc(rem) {
+  const bookId = rem.id;
+  rem.remove();
+  for(let i = 0; i < bookList.length; i += 1) {
+    if(bookList[i] = bookId){
+      bookList.splice(i, 1);
+    }
+  }
+}
+
 const createBook = (ev) => {
   ev.preventDefault();
-  
+
   let book = {
     title: document.querySelector('#titleInput').value,
     author: document.querySelector('#authorInput').value,
   }
 
   bookList.push(book);
-  console.log(bookList);
   postedBooks.innerHTML= '';
 
   for(let i = 0; i < bookList.length; i += 1) {
-    bookList[i].id = i + 1;
+    bookList[i].id = i;
 
     const bookCont = document.createElement('div');
     bookCont.classList.add('bookCont');
@@ -38,6 +47,7 @@ const createBook = (ev) => {
     // removeBttn.setAttribute('type', submit);
     removeBttn.setAttribute('id', `bttn${bookList[i].id}`);
     bookCont.appendChild(removeBttn);
+    removeBttn.addEventListener('click', () => {removeFunc(bookCont)});
 
     postedBooks.appendChild(bookCont);
   }
