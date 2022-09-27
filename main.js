@@ -1,21 +1,15 @@
 const form = document.querySelector('#form');
 const listBooks = document.querySelector('#list-books');
-let books = [];
-
-// Clean HTML
-function cleanHTML() {
-  while (listBooks.firstChild) {
-    listBooks.removeChild(listBooks.firstChild);
+let books = new Array(0);
+class Books {
+  constructor(id,tittle, author){
+    this.id = id;
+    this.tittle = tittle;
+    this.author = author;
   }
-}
 
-// add books to LocalStorage
-function syncStorage() {
-  localStorage.setItem('book', JSON.stringify(books));
-}
-
-function createHTML() {
-  cleanHTML();
+  static createHTML () {
+    cleanHTML();
 
   if (books.length > 0) {
     books.forEach((book) => {
@@ -41,7 +35,7 @@ function createHTML() {
       function removeBook(id) {
         books = books.filter((book) => book.id !== id);
 
-        createHTML();
+        Books.createHTML();
       }
 
       // Remove function
@@ -52,21 +46,35 @@ function createHTML() {
   }
 
   syncStorage();
+  }
+}
+
+// Clean HTML
+function cleanHTML() {
+  while (listBooks.firstChild) {
+    listBooks.removeChild(listBooks.firstChild);
+  }
+}
+
+// add books to LocalStorage
+function syncStorage() {
+  localStorage.setItem('book', JSON.stringify(books));
 }
 
 // Function
 function addBook(e) {
   e.preventDefault();
 
-  const book = {
-    id: Date.now(),
-    tittle: document.querySelector('#title').value,
-    author: document.querySelector('#author').value,
-  };
+  const tittleValue = document.querySelector('#title').value;
+  const author = document.querySelector('#author').value;
+  const id = Date.now();
+
+  const book = new Books(id, tittleValue, author);
+
 
   books = [...books, book];
 
-  createHTML();
+  Books.createHTML();
 
   form.reset();
 }
@@ -77,11 +85,10 @@ function eventListeners() {
   form.addEventListener('submit', addBook);
 
   // book DOM
-
   document.addEventListener('DOMContentLoaded', () => {
     books = JSON.parse(localStorage.getItem('book')) || [];
 
-    createHTML();
+    Books.createHTML();
   });
 }
 
