@@ -2,93 +2,87 @@ const form = document.querySelector('#form');
 const listBooks = document.querySelector('#list-books');
 let books = [];
 
-//Event Listeners
-
-eventListeners();
-
-function eventListeners() {
-
-    //add book
-    form.addEventListener('submit', addBook);
-
-    //book DOM 
-
-    document.addEventListener('DOMContentLoaded', () => {
-        books = JSON.parse(localStorage.getItem('book')) || [];
-
-        createHTML();
-    });
+// Clean HTML
+function cleanHTML() {
+  while (listBooks.firstChild) {
+    listBooks.removeChild(listBooks.firstChild);
+  }
 }
 
-//Function
-function addBook(e) {
-    e.preventDefault();
-
-    const book = {
-        id: Date.now(),
-        tittle: document.querySelector('#title').value,
-        author: document.querySelector('#author').value
-    };
-
-    books = [...books, book];
-
-    createHTML();
-
-    form.reset();
+// add books to LocalStorage
+function syncStorage() {
+  localStorage.setItem('book', JSON.stringify(books));
 }
 
 function createHTML() {
+  cleanHTML();
 
-    cleanHTML()
+  if (books.length > 0) {
+    books.forEach((book) => {
+      const bookContainer = document.createElement('div');
+      bookContainer.classList.add('book-wrap');
+      listBooks.appendChild(bookContainer);
 
-    if(books.length > 0) {
-        books.forEach(book => {
+      const tittleBook = document.createElement('p');
+      tittleBook.classList.add('tittle-book');
+      tittleBook.innerText = `"${book.tittle}"`;
+      bookContainer.appendChild(tittleBook);
 
-            const bookContainer = document.createElement('div');
-            bookContainer.classList.add('book-wrap');
-            listBooks.appendChild(bookContainer);
+      const authorBook = document.createElement('p');
+      authorBook.classList.add('author-book');
+      authorBook.innerText = `by ${book.author}`;
+      bookContainer.appendChild(authorBook);
 
-            const tittleBook = document.createElement('p');
-            tittleBook.classList.add('tittle-book');
-            tittleBook.innerText = `"${book.tittle}"`;
-            bookContainer.appendChild(tittleBook);
+      const removeBtn = document.createElement('button');
+      removeBtn.classList.add('btn-remove');
+      removeBtn.innerText = 'Remove';
+      bookContainer.appendChild(removeBtn);
 
-            const authorBook = document.createElement('p');
-            authorBook.classList.add('author-book');
-            authorBook.innerText = `by ${book.author}`;
-            bookContainer.appendChild(authorBook);
+      function removeBook(id) {
+        books = books.filter((book) => book.id !== id);
 
-            const removeBtn = document.createElement('button');
-            removeBtn.classList.add('btn-remove');
-            removeBtn.innerText = 'Remove';
-            bookContainer.appendChild(removeBtn);
+        createHTML();
+      }
 
-            // Remove function
-            removeBtn.onclick = () => {
-                removeBook(book.id);
-            }
+      // Remove function
+      removeBtn.onclick = () => {
+        removeBook(book.id);
+      };
+    });
+  }
 
-        });
-    }
-
-    syncStorage();
+  syncStorage();
 }
 
-//add books to LocalStorage
-function syncStorage() {
-    localStorage.setItem('book', JSON.stringify(books));
+// Function
+function addBook(e) {
+  e.preventDefault();
+
+  const book = {
+    id: Date.now(),
+    tittle: document.querySelector('#title').value,
+    author: document.querySelector('#author').value,
+  };
+
+  books = [...books, book];
+
+  createHTML();
+
+  form.reset();
 }
 
-//Remove Book
-function removeBook(id) {
-    books = books.filter(book => book.id !== id);
+// Event Listeners
+function eventListeners() {
+  // add book
+  form.addEventListener('submit', addBook);
+
+  // book DOM
+
+  document.addEventListener('DOMContentLoaded', () => {
+    books = JSON.parse(localStorage.getItem('book')) || [];
 
     createHTML();
+  });
 }
 
-//Clean HTML
-function cleanHTML() {
-    while(listBooks.firstChild){
-        listBooks.removeChild(listBooks.firstChild);
-    }
-}
+eventListeners();
