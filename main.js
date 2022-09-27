@@ -1,84 +1,94 @@
-let bookList = [];
-const re = /^$/;
+const form = document.querySelector('#form');
+const listBooks = document.querySelector('#list-books');
+let books = [];
 
-const addForm = document.querySelector('#inputForm');
-const postedBooks = document.querySelector('#postedBooks');
+//Event Listeners
 
-function bookStorage() {
-  localStorage.setItem('book',JSON.stringify(bookList));
+eventListeners();
+
+function eventListeners() {
+
+    //add book
+    form.addEventListener('submit', addBook);
+
+    //book DOM 
+
+    document.addEventListener('DOMContentLoaded', () => {
+        books = JSON.parse(localStorage.getItem('book')) || [];
+
+        createHTML();
+    });
 }
 
-function removeFunc(rem) {
-  const bookId = Number(rem.id);
-  rem.remove();
-  for (let i = 0; i < bookList.length; i += 1) {
-    if (i === bookId) {
-      bookList.splice(i, 1);
-    }
-  }
-  const itemss = JSON.parse(localStorage.getItem('book'));
-  console.log(itemss, typeof itemss);
+//Function
+function addBook(e) {
+    e.preventDefault();
+
+    const book = {
+        id: Date.now(),
+        tittle: document.querySelector('#title').value,
+        author: document.querySelector('#author').value
+    };
+
+    books = [...books, book];
+
+    createHTML();
+
+    form.reset();
 }
 
-const createBook = (ev) => {
-  ev.preventDefault();
+function createHTML() {
 
-  const book = {
-    title: document.querySelector('#titleInput').value,
-    author: document.querySelector('#authorInput').value,
-  };
+    cleanHTML()
 
-  bookList.push(book);
-  postedBooks.innerHTML = '';
+    if(books.length > 0) {
+        books.forEach(book => {
 
-  for(let i = 0; i < bookList.length; i += 1) {
-    if((bookList[i].title === re) || (bookList[i].author === re)) {
-      bookList.splice(i, 1);
+            const bookContainer = document.createElement('div');
+            bookContainer.classList.add('book-wrap');
+            listBooks.appendChild(bookContainer);
+
+            const tittleBook = document.createElement('p');
+            tittleBook.classList.add('tittle-book');
+            tittleBook.innerText = `"${book.tittle}"`;
+            bookContainer.appendChild(tittleBook);
+
+            const authorBook = document.createElement('p');
+            authorBook.classList.add('author-book');
+            authorBook.innerText = `by ${book.author}`;
+            bookContainer.appendChild(authorBook);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.classList.add('btn-remove');
+            removeBtn.innerText = 'Remove';
+            bookContainer.appendChild(removeBtn);
+
+            // Remove function
+            removeBtn.onclick = () => {
+                removeBook(book.id);
+            }
+
+        });
     }
-  }
 
-  for (let i = 0; i < bookList.length; i += 1) {
-    bookList[i].id = i;
+    syncStorage();
+}
 
-    const bookCont = document.createElement('div');
-    bookCont.classList.add('bookCont');
-    bookCont.setAttribute('id', bookList[i].id);
+//add books to LocalStorage
+function syncStorage() {
+    localStorage.setItem('book', JSON.stringify(books));
+}
 
-    const dispTitle = document.createElement('p');
-    dispTitle.classList.add('postTitle');
-    dispTitle.innerHTML = `"${bookList[i].title}"`;
-    bookCont.appendChild(dispTitle);
+//Remove Book
+function removeBook(id) {
+    books = books.filter(book => book.id !== id);
 
-    const dispAuthor = document.createElement('p');
-    dispAuthor.classList.add('postAuthor');
-    dispAuthor.innerHTML = `by ${bookList[i].author}`;
-    bookCont.appendChild(dispAuthor);
+    createHTML();
+}
 
-    const removeBttn = document.createElement('button');
-    removeBttn.innerHTML = 'Remove';
-    removeBttn.classList.add('removeBttn');
-    // removeBttn.setAttribute('type', submit);
-    removeBttn.setAttribute('id', `bttn${bookList[i].id}`);
-    bookCont.appendChild(removeBttn);
-    removeBttn.addEventListener('click', () => { removeFunc(bookCont); });
-
-    postedBooks.appendChild(bookCont);
-  }
-
-  document.forms[0].reset();
-  bookStorage();
-};
-
-
-addForm.addEventListener('submit', createBook);
-
-
-document.addEventListener('DOMContentLoaded', (ev) => {
-  bookList = JSON.parse(localStorage.getItem('book')) || [];
-  for(let i = 0; i < bookList.length; i += 1) {
-    if((bookList[i].title.value === undefined) || (bookList[i].author.value === undefined)) {
-      bookList.splice(i, 1);
+//Clean HTML
+function cleanHTML() {
+    while(listBooks.firstChild){
+        listBooks.removeChild(listBooks.firstChild);
     }
-  }
-  createBook(ev);
-});
+}
