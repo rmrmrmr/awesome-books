@@ -98,7 +98,6 @@ function eventListeners() {
 
 eventListeners();
 
-
 function displayDate() {
   document.querySelector('.date-text').innerHTML = Date();
 }
@@ -118,11 +117,20 @@ function displayList() {
 function displayAddNew() {
   list.style.display = 'none';
   addNew.style.display = 'flex';
-  contact.style.display = 'none'; 
+  contact.style.display = 'none';
 }
 
 function displayContact() {
   list.style.display = 'none';
   addNew.style.display = 'none';
-  contact.style.display = 'flex'; 
+  contact.style.display = 'flex';
 }
+
+const navList = document.getElementById('nav-list');
+navList.addEventListener('click', displayList);
+
+const navAddNew = document.getElementById('navAddNew');
+navAddNew.addEventListener('click', displayAddNew);
+
+const navContact = document.getElementById('navContact');
+navContact.addEventListener('click', displayContact);

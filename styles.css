@@ -112,12 +112,16 @@ header {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: flex-end;
 }
 
 .formInput {
   padding: 10px;
   border: 3px solid rgb(183, 178, 178);
   border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+
 }
 
 #addBttn {
@@ -129,7 +133,8 @@ header {
 }
 
 .book-wrap {
-  width: 50%;
+  width: 80%;
+  max-width: 700px;
   display: flex;
   justify-content: space-between;
   align-content: center;
@@ -160,7 +165,6 @@ header {
   border-bottom: 5px solid #e63946;
   border-radius: 10px;
 }
-
 
 .contact-info {
   display: none;
